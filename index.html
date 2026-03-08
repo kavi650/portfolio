@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaviyarasu R | Turning ideas into reality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@100;400;700;900&display=swap');
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --accent: #3b82f6;
+            --border: #262626;
+            --text: #ffffff;
+        }
+
+        .light-mode {
+            --bg: #ffffff;
+            --surface: #f4f4f5;
+            --accent: #2563eb;
+            --border: #e5e5e7;
+            --text: #09090b;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Pure Fade Page Transition */
+        .page {
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            width: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            position: relative;
+        }
+
+        .page.exit {
+            opacity: 0;
+        }
+
+        /* Brutalist Elements */
+        .card-brutal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card-brutal:hover {
+            border-color: var(--accent);
+            box-shadow: 4px 4px 0px var(--accent);
+        }
+
+        .nav-active {
+            color: var(--accent) !important;
+            border-bottom: 2px solid var(--accent);
+            opacity: 1 !important;
+        }
+
+        /* Custom UI */
+        .skill-tag {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            padding: 12px 24px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0px #1d4ed8;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            background: transparent;
+            color: inherit;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Sidebar Nav */
+        .sidebar {
+            border-right: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                position: relative;
+                height: auto;
+            }
+
+            .md-ml-64 {
+                margin-left: 0 !important;
+            }
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            padding: 0;
+        }
+
+
+        /* Landing Screen Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        /* Smooth exit */
+        #landingScreen.hide {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .nav-btn:focus {
+            outline: none;
+        }
+
+        .nav-btn:active {
+            background: transparent;
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <!-- LANDING / SPLASH SCREEN -->
+    <div id="landingScreen" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
+        <div class="text-center animate-fade-in">
+            <h1 class="text-6xl md:text-8xl font-black tracking-tight">
+                KAVIYARASU <span class="text-blue-500">R</span>
+            </h1>
+            <p class="mt-4 text-xs uppercase tracking-widest opacity-50">
+                Turning ideas into reality.
+            </p>
+        </div>
+    </div>
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="sidebar w-full md:w-64 flex-shrink-0 p-8 flex flex-col justify-between md:fixed md:h-screen z-50">
+            <div>
+                <div class="mb-12">
+                    <h2 class="text-2xl font-black tracking-tighter cursor-pointer" onclick="nav('home')">
+                        KAVIYARASU<span class="text-blue-500">.R</span></h2>
+                    <p class="text-[10px] uppercase tracking-widest opacity-50 mt-1 text-justify">Learn | Build | Grow.
+                    </p>
+                </div>
+
+                <nav class="space-y-6 flex flex-col items-start">
+                    <button onclick="nav('home')" data-nav="home"
+                        class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Home</button>
+                    <button onclick="nav('about')" data-nav="about"
+                        class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">About</button>
+                    <button onclick="nav('projects')" data-nav="projects"
+                        class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Projects</button>
+                    <button onclick="nav('credentials')" data-nav="credentials"
+                        class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Certifications</button>
+                    <button onclick="nav('contact')" data-nav="contact"
+                        class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Contact</button>
+                </nav>
+            </div>
+
+            <div class="pt-8 md:pt-0">
+                <button id="themeToggle"
+                    class="p-3 border border-zinc-800 rounded-full hover:border-blue-500 transition-all focus:outline-none"
+                    aria-label="Toggle Theme">
+                    <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-grow md:ml-64 p-6 md:p-12 lg:p-20">
+
+            <!-- HOME PAGE -->
+            <section id="page-home" class="page min-h-[85vh] flex items-center">
+                <div class="max-w-3xl w-full">
+                    <h4 class="text-blue-500 font-bold mb-4 tracking-tighter"></h4>
+                    <h1 class="text-5xl md:text-8xl font-black leading-[0.9] mb-8 uppercase italic">
+                        Building the <br>
+
+                        <span class="text-blue-500"
+                            style="-webkit-text-stroke:2px currentColor; -webkit-text-fill-color:transparent;">
+                            future of
+                        </span>
+
+                        <br>
+
+                        <span class="text-5xl md:text-8xl font-black leading-[0.9] uppercase italic">
+                            intelligence.
+                        </span>
+                    </h1>
+                    <p class="text-xl md:text-2xl opacity-70 mb-12 max-w-2xl leading-relaxed font-light text-justify">
+                        I'm <strong>KAVIYARASU R</strong>, an AIML
+                        student
+                        with a strong passion about programming, problem-solving, and technology. I enjoy building
+                        innovative and efficient digital solutions to tackle the real-world challenges.
+                    </p>
+                    <div class="flex flex-wrap gap-6 items-center">
+                        <div class="flex flex-col justify-center font-mono text-xs opacity-60">
+                            <div><span class="text-blue-500">Status:</span> OPEN FOR INTERNSHIPS</div>
+                            <div><span class="text-blue-500">Loc:</span> Coimbatore</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT PAGE -->
+            <section id="page-about" class="page">
+                <div class="grid lg:grid-cols-2 gap-16 items-start">
+                    <div>
+                        <h2 class="text-5xl font-black mb-8">THE <span class="text-blue-500 ">PROFILE</span>
+                        </h2>
+                        <p class="text-xl opacity-80 leading-relaxed mb-6 text-justify">
+                            “Intelligent systems are not just built with code, but with the vision to create meaningful
+                            technological solutions.”
+                        </p>
+                        <p class="text-lg opacity-60 leading-relaxed mb-8 text-justify">
+                            Currently pursuing B.Sc. in AI & ML, I focus on building intelligent software products and
+                            solving real-world problems using technology.
+                        </p>
+
+                        <div class="mb-12 space-y-8">
+                            <div>
+                                <h3 class="text-2xl font-black mb-6 uppercase">Skills :</h3>
+                                <div class="space-y-6">
+                                    <div>
+                                        <h4 class="text-blue-500 font-bold text-xs uppercase tracking-widest mb-4">
+                                            Technical Expertise</h4>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Machine Learning</span>
+                                                <span class="text-xs opacity-50 uppercase italic">Advanced</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Python,Java,C++, JS, SQL</span>
+                                                <span
+                                                    class="text-xs text-blue-500 uppercase italic font-black tracking-tighter">Expert</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Prompt Engineering</span>
+                                                <span class="text-xs opacity-50 uppercase italic">Advanced</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Full-Stack Development</span>
+                                                <span class="text-xs opacity-50 uppercase italic">Advanced</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pt-4">
+                                        <h4 class="text-blue-500 font-bold text-xs uppercase tracking-widest mb-4">
+                                            Design & Creative Tools</h4>
+                                        <div class="space-y-4">
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Figma</span>
+                                                <span
+                                                    class="text-xs text-blue-500 uppercase italic font-black tracking-tighter">Expert</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Blender</span>
+                                                <span class="text-xs opacity-50 uppercase italic">Intermediate</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Canva</span>
+                                                <span
+                                                    class="text-xs text-blue-500 uppercase italic font-black tracking-tighter">Expert</span>
+                                            </div>
+                                            <div class="flex justify-between items-end border-b border-zinc-800 pb-2">
+                                                <span class="font-bold">Microsoft 365</span>
+                                                <span class="text-xs opacity-50 uppercase italic">Advanced</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-black mb-4 uppercase">Academic Profile</h3>
+                        <div class="card-brutal p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold">B.Sc. AIML</h3>
+                                <span class="text-xs bg-blue-500/10 text-blue-500 px-2 py-1">2024 — 2027</span>
+                            </div>
+                            <p class="opacity-80 font-medium text-sm">Sri Krishna Arts and Science College</p>
+                            <p class="text-blue-500 font-bold mt-2 text-sm">CGPA: 8</p>
+                        </div>
+                        <div class="card-brutal p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold">Higher Secondary Education</h3>
+                                <span class="text-xs bg-blue-500/10 text-blue-500 px-2 py-1">2022 — 2024</span>
+                            </div>
+                            <p class="opacity-80 font-medium text-sm">SRNV Higher Secondary School</p>
+                            <p class="text-blue-500 font-bold mt-2 text-sm">Score: 81%</p>
+                        </div>
+                        <div class="card-brutal p-6">
+                            <h3 class="text-blue-500 font-bold mb-2 text-xs uppercase tracking-widest">Current Base</h3>
+                            <p class="text-xl font-bold">Coimbatore, Tamil Nadu</p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROJECTS PAGE -->
+            <section id="page-projects" class="page">
+                <h2 class="text-5xl font-black mb-12">WORKS<span class="text-blue-500"></span></h2>
+
+                <!-- Project data used by JS -->
+                <script>
+                    const projectDetails = {
+                        'proj-ai-resume': {
+                            title: 'AI Resume Analyzer',
+                            year: '2025',
+                            role: 'Solo Developer',
+                            overview: 'An AI-powered resume analysis application that evaluates resumes using Retrieval-Augmented Generation (RAG) and Large Language Models (LLM). The system analyzes uploaded resumes, summarizes qualifications, identifies strengths and weaknesses, and provides personalized career improvement suggestions. It also includes a LinkedIn job scraper using Selenium to collect job postings and help users discover relevant opportunities.',
+                            features: ['AI-based resume summary generation', 'Strength and weakness analysis of resumes', 'Personalized career improvement suggestions', 'Job title recommendations based on resume content', 'LinkedIn job data scraping (company, role, location, job URL)', 'Resume text extraction and semantic search using vector embeddings '],
+                            tags: ['Python', 'Streamlit', 'LangChain', 'OpenAI API', 'LangChain']
+                        },
+                        'proj-ebank': {
+                            title: 'E-Bank Management System',
+                            year: '2025',
+                            role: 'Full-Stack Developer',
+                            overview: 'A scalable full-stack digital banking platform built to replicate real-world banking operations, enabling secure user authentication, account creation and management, fund transfers, and real-time transaction tracking. The system includes an interactive user dashboard for monitoring balances and financial activity, along with a powerful admin panel for managing users, overseeing transactions, and maintaining system integrity. The platform is powered by a Flask backend and a structured PostgreSQL database to ensure reliable data management, security, and efficient processing of banking operations.',
+                            features: ['Secure user authentication and login system for account access', 'Account management with balance monitoring and profile details', 'Admin dashboard with audit logs', 'Transaction history tracking for financial transparency', 'Admin dashboard for managing users and banking records', 'Personal budgeting tool for tracking expenses'],
+                            tags: ['Python', 'Flask', 'PostgreSQL', 'HTML', 'CSS', 'JavaScript']
+                        }
+                    };
+                </script>
+
+                <!-- One row: both cards side by side, shared panel below -->
+                <div class="proj-row space-y-4">
+
+                    <!-- Cards grid -->
+                    <div class="grid grid-cols-2 gap-5">
+
+                        <!-- Card 1: AI Resume Analyzer -->
+                        <div class="card-brutal group overflow-hidden cursor-pointer select-none proj-card"
+                            data-proj="proj-ai-resume" onclick="toggleProject(this)">
+                            <div
+                                class="aspect-video bg-zinc-900 border-b border-zinc-800 flex items-center justify-center relative overflow-hidden">
+                                <div
+                                    class="text-2xl font-black opacity-20 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 text-white text-center px-4">
+                                    AI RESUME ANALYZER</div>
+                                <a href="#" onclick="event.stopPropagation()"
+                                    class="absolute top-3 right-3 p-1.5 bg-white/10 hover:bg-blue-500 rounded-full transition-all hover:scale-110 border border-white/10">
+                                    <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="text-base font-bold uppercase">AI Resume Analyzer</h3>
+                                    <span class="proj-chevron text-blue-500 transition-transform duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p class="opacity-50 text-xs mb-3">AI tool for resume analysis and career optimization.
+                                </p>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <span class="skill-tag">Python</span>
+                                    <span class="skill-tag">OpenAI</span>
+                                    <span class="skill-tag">Streamlit</span>
+                                    <span class="skill-tag">LLMs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: E-Bank System -->
+                        <div class="card-brutal group overflow-hidden cursor-pointer select-none proj-card"
+                            data-proj="proj-ebank" onclick="toggleProject(this)">
+                            <div
+                                class="aspect-video bg-zinc-900 border-b border-zinc-800 flex items-center justify-center relative overflow-hidden">
+                                <div
+                                    class="text-2xl font-black opacity-20 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 text-white text-center px-4">
+                                    E-BANK SYSTEM</div>
+                                <a href="#" onclick="event.stopPropagation()"
+                                    class="absolute top-3 right-3 p-1.5 bg-white/10 hover:bg-blue-500 rounded-full transition-all hover:scale-110 border border-white/10">
+                                    <svg class="w-4 h-4 fill-current text-white" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                                    </svg>
+                                </a>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="text-base font-bold uppercase">E-Bank System</h3>
+                                    <span class="proj-chevron text-blue-500 transition-transform duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <p class="opacity-50 text-xs mb-3">Digital banking solution with secure login, financial
+                                    tracking, and admin monitoring.</p>
+                                <div class="flex gap-1.5 flex-wrap">
+                                    <span class="skill-tag">Python</span>
+                                    <span class="skill-tag">Flask</span>
+                                    <span class="skill-tag">PostgreSQL</span>
+                                    <span class="skill-tag">HTML</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="proj-panel overflow-hidden"
+                        style="max-height:0; transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1);">
+                        <div class="proj-panel-inner border border-zinc-800 bg-zinc-900/60 p-6"
+                            style="border-left: 3px solid var(--accent);">
+                        </div>
+                    </div>
+                    <div class="flex justify-center mt-6">
+
+                        <div class="flex justify-center mt-6">
+
+                            <!-- GITHUB BUTTON -->
+                            <a href="https://github.com/kavi650?tab=repositories" target="_blank" title="View GitHub">
+                                <button
+                                    class="relative inline-flex items-center gap-2 bg-blue-500 text-white px-6 py-2 text-sm font-semibold rounded-[20px] border border-blue-400 transition-all duration-300 hover:scale-105 hover:bg-blue-600 hover:shadow-[0_0_15px_rgba(59,130,246,0.6)]">
+
+                                    <span>More on</span>
+
+                                    <!-- GitHub Logo -->
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                        <path
+                                            d="M12 .297a12 12 0 00-3.793 23.403c.6.113.82-.258.82-.577v-2.234c-3.338.726-4.042-1.415-4.042-1.415-.546-1.387-1.333-1.757-1.333-1.757-1.089-.745.083-.73.083-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.835 2.807 1.305 3.492.998.108-.776.418-1.305.762-1.605-2.665-.305-5.466-1.332-5.466-5.931 0-1.311.47-2.381 1.236-3.221-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 016.003 0c2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.243 2.873.119 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.804 5.624-5.475 5.921.43.372.823 1.102.823 2.222v3.293c0 .321.218.694.825.576A12.002 12.002 0 0012 .297z" />
+                                    </svg>
+
+                                </button>
+                            </a>
+
+                        </div>
+
+                    </div><!-- end proj-row -->
+
+                    <script>
+                        function toggleProject(card) {
+                            const row = card.closest('.proj-row');
+                            const panel = row.querySelector('.proj-panel');
+                            const inner = row.querySelector('.proj-panel-inner');
+                            const projId = card.dataset.proj;
+                            const data = projectDetails[projId];
+
+                            const activeId = panel.dataset.activeProj || '';
+                            const isOpen = panel.style.maxHeight !== '0px' && panel.style.maxHeight !== '';
+                            const isSame = activeId === projId;
+
+                            // Reset all chevrons and borders in this row
+                            row.querySelectorAll('.proj-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
+                            row.querySelectorAll('.proj-card').forEach(c => c.style.borderColor = '');
+
+                            // If same card clicked while open → collapse
+                            if (isOpen && isSame) {
+                                panel.style.maxHeight = '0px';
+                                panel.dataset.activeProj = '';
+                                return;
+                            }
+
+                            // Populate panel
+                            inner.innerHTML = `
+                            <div class="flex flex-wrap gap-6 justify-between items-start mb-5">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Project</p>
+                                    <h3 class="text-xl font-black uppercase">${data.title}</h3>
+                                </div>
+                                <div class="flex gap-6">
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Year</p>
+                                        <p class="font-bold text-blue-500">${data.year}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] uppercase tracking-widest opacity-40 mb-1">Role</p>
+                                        <p class="font-bold">${data.role}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="opacity-70 text-sm leading-relaxed mb-5 text-justify">${data.overview}</p>
+                            <div class="grid md:grid-cols-2 gap-5">
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest text-blue-500 font-bold mb-2">Key Features</p>
+                                    <ul class="space-y-1.5">
+                                        ${data.features.map(f => `<li class="flex items-start gap-2 text-xs opacity-70"><span class="text-blue-500">▸</span>${f}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] uppercase tracking-widest text-blue-500 font-bold mb-2">Tech Stack</p>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        ${data.tags.map(t => `<span class="skill-tag">${t}</span>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+
+                            // Highlight active card
+                            card.style.borderColor = 'var(--accent)';
+                            card.querySelector('.proj-chevron').style.transform = 'rotate(180deg)';
+
+                            // Open panel
+                            panel.dataset.activeProj = projId;
+                            panel.style.maxHeight = '0px';
+                            requestAnimationFrame(() => {
+                                panel.style.maxHeight = (inner.scrollHeight + 60) + 'px';
+                            });
+                        }
+                    </script>
+            </section>
+
+            <!-- CERTIFICATIONS PAGE -->
+            <section id="page-credentials" class="page">
+                <div class="max-w-4xl">
+
+
+                    <h4 class="text-blue-500 font-bold mb-4 tracking-tighter uppercase text-center">
+                        Verified Credentials
+                    </h4>
+
+                    <h2 class="text-5xl md:text-7xl font-black mb-8 leading-none uppercase text-center">
+                        Professional<br>Certifications.
+                    </h2>
+                    <!-- Certificate Badge Icon -->
+                    <div class="flex justify-center mb-8">
+                        <div
+                            class="w-20 h-20 rounded-full bg-zinc-900 border border-zinc-700 flex items-center justify-center">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24">
+                                <circle cx="12" cy="8" r="5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 13l-2 8 6-3 6 3-2-8" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <p class="text-xl md:text-2xl opacity-70 mb-12 max-w-2xl leading-relaxed mx-auto text-center">
+                        I strengthen my technical expertise through industry-recognized certification programs. These
+                        certifications reflect my commitment to continuous learning, professional development, and
+                        staying updated with the latest advancements in programming and modern technologies.
+                    </p>
+
+                    <!-- Certification Provider Logos -->
+                    <div class="flex flex-wrap justify-center items-center gap-6 mb-14">
+                        <!-- NPTEL -->
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 border border-zinc-800 rounded bg-zinc-900/50 hover:border-blue-500 transition-all group">
+                            <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-500 transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                            </svg>
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">NPTEL</span>
+                        </div>
+                        <!-- Coursera -->
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 border border-zinc-800 rounded bg-zinc-900/50 hover:border-blue-500 transition-all group">
+                            <svg class="w-5 h-5 text-blue-400 group-hover:text-blue-500 transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M11.7 17.7c-3.2 0-5.7-2.6-5.7-5.7S8.5 6.3 11.7 6.3c1.8 0 3.4.8 4.4 2.1l-2.2 1.3c-.5-.7-1.3-1.2-2.2-1.2-1.7 0-3.1 1.4-3.1 3.1s1.4 3.1 3.1 3.1c1 0 1.8-.5 2.3-1.2l2.2 1.3c-1.1 1.5-2.7 2.3-4.5 2.3zM12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" />
+                            </svg>
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">Coursera</span>
+                        </div>
+                        <!-- HackerRank -->
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 border border-zinc-800 rounded bg-zinc-900/50 hover:border-blue-500 transition-all group">
+                            <svg class="w-5 h-5 text-green-400 group-hover:text-green-500 transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2L3 7v10l9 5 9-5V7l-9-5zm3.8 14.6h-1.7v-3.1H9.9v3.1H8.2V7.4h1.7v3h4.2v-3h1.7v9.2z" />
+                            </svg>
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">HackerRank</span>
+                        </div>
+                        <!-- Udemy -->
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 border border-zinc-800 rounded bg-zinc-900/50 hover:border-blue-500 transition-all group">
+                            <svg class="w-5 h-5 text-purple-400 group-hover:text-purple-500 transition-colors"
+                                fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 0L5.81 3.573v3.574l6.189-3.574 6.191 3.574V3.573zM5.81 10.148v8.144c0 1.85.589 3.243 1.741 4.234S10.177 24 11.973 24s3.269-.482 4.448-1.474c1.152-.991 1.741-2.384 1.741-4.234v-8.144l-6.189 3.574z" />
+                            </svg>
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">Udemy</span>
+                        </div>
+                        <!-- Google -->
+                        <div
+                            class="flex items-center gap-2 px-4 py-2 border border-zinc-800 rounded bg-zinc-900/50 hover:border-blue-500 transition-all group">
+                            <svg class="w-5 h-5 group-hover:opacity-100 transition-opacity" viewBox="0 0 24 24">
+                                <path fill="#4285F4"
+                                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
+                                <path fill="#34A853"
+                                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05"
+                                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335"
+                                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            <span
+                                class="text-xs font-bold uppercase tracking-wider opacity-60 group-hover:opacity-100 transition-opacity">Google</span>
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- OPEN CERTIFICATE VAULT BUTTON -->
+                    <div class="mt-10 flex justify-center">
+                        <a href="your-link" target="_blank" title="View all certificates">
+                            <button
+                                class="vault-btn relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 text-white px-12 py-5 text-xl font-bold rounded-[35px] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95"
+                                onclick="ripple(event)">
+
+                                <span class="relative z-10">CERTIFICATIONS VAULT</span>
+
+                                <!-- Cross Arrow Icon -->
+                                <svg class="w-6 h-6 relative z-10" fill="none" stroke="currentColor" stroke-width="2"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7 17L17 7M17 7H8M17 7V16" />
+                                </svg>
+
+                            </button>
+                        </a>
+                    </div>
+
+                    <style>
+                        .vault-btn::after {
+                            content: '';
+                            position: absolute;
+                            inset: 0;
+                            background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.15) 50%, transparent 70%);
+                            transform: translateX(-100%);
+                            transition: none;
+                        }
+
+                        .vault-btn:hover::after {
+                            transform: translateX(100%);
+                            transition: transform 0.6s ease;
+                        }
+
+                        .vault-btn .ripple-circle {
+                            position: absolute;
+                            border-radius: 50%;
+                            background: rgba(255, 255, 255, 0.4);
+                            transform: scale(0);
+                            animation: rippleAnim 0.6s ease-out forwards;
+                            pointer-events: none;
+                        }
+
+                        @keyframes rippleAnim {
+                            to {
+                                transform: scale(4);
+                                opacity: 0;
+                            }
+                        }
+                    </style>
+                    <script>
+                        function ripple(e) {
+                            const btn = e.currentTarget;
+                            const circle = document.createElement('span');
+                            const rect = btn.getBoundingClientRect();
+                            const size = Math.max(rect.width, rect.height);
+                            circle.style.width = circle.style.height = size + 'px';
+                            circle.style.left = (e.clientX || e.touches?.[0]?.clientX || rect.left + rect.width / 2) - rect.left - size / 2 + 'px';
+                            circle.style.top = (e.clientY || e.touches?.[0]?.clientY || rect.top + rect.height / 2) - rect.top - size / 2 + 'px';
+                            circle.classList.add('ripple-circle');
+                            btn.appendChild(circle);
+                            setTimeout(() => circle.remove(), 600);
+                        }
+                    </script>
+                </div>
+            </section>
+
+            <!-- CONTACT PAGE -->
+            <section id="page-contact" class="page">
+                <div class="min-h-[80vh] flex flex-col justify-center items-center text-center px-6">
+
+                    <!-- HEADLINE -->
+                    <h2 class="text-5xl md:text-7xl font-black leading-tight mb-10">
+                        Transforming ideas into<br>
+                        <span class="text-blue-500">impactful technology</span>
+                    </h2>
+
+                    <!-- EMAIL CTA (BLUE BASE) -->
+                    <a href="mailto:kaviyarasur271@gmail.com" title="Send me an email"
+                        class="flex items-center gap-3 bg-blue-500 text-white px-8 py-4 rounded-full font-bold hover:scale-105 hover:shadow-[4px_4px_0px_#1d4ed8] transition-all">
+                        kaviyarasur271@gmail.com
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M7 17L17 7M7 7h10v10" />
+                        </svg>
+                    </a>
+
+                    <!-- SOCIAL LINKS -->
+                    <div class="flex gap-6 mt-10 opacity-70">
+
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/kaviyarasu-r-1356b732b/" target="_blank"
+                            class="hover:text-blue-500 transition-colors" aria-label="LinkedIn">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M4.98 3.5a2.48 2.48 0 110 4.96 2.48 2.48 0 010-4.96zM3 8.98h3.96V21H3V8.98zM9.5 8.98h3.79v1.64h.05c.53-1 1.83-2.06 3.77-2.06 4.03 0 4.77 2.65 4.77 6.1V21h-3.96v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H9.5V8.98z" />
+                            </svg>
+                        </a>
+
+                        <!-- GitHub -->
+                        <a href="https://github.com/kavi650" target="_blank"
+                            class="hover:text-blue-500 transition-colors" aria-label="GitHub">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                            </svg>
+                        </a>
+
+                        <!-- HackerRank -->
+                        <a href="https://www.hackerrank.com/profile/kaviyarasu852681" target="_blank"
+                            class="hover:text-blue-500 transition-colors" aria-label="HackerRank">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2L3 7v10l9 5 9-5V7l-9-5zm3.8 14.6h-1.7v-3.1H9.9v3.1H8.2V7.4h1.7v3h4.2v-3h1.7v9.2z" />
+                            </svg>
+                        </a>
+                        <!-- LeetCode -->
+                        <a href="https://leetcode.com/u/kavi_2711/" target="_blank" rel="noopener noreferrer"
+                            class="hover:text-blue-500 transition-colors" aria-label="LeetCode Profile">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M16.102 17.93l-2.697 2.607c-.466.462-1.211.462-1.677 0l-4.571-4.513a1.155 1.155 0 0 1 0-1.644l4.571-4.513c.466-.462 1.211-.462 1.677 0l2.697 2.607a1.155 1.155 0 0 1 0 1.644l-2.697 2.607zm-7.664-3.593L5.438 11.33a1.155 1.155 0 0 1 0-1.644l4.571-4.513c.466-.462 1.211-.462 1.677 0l2.697 2.607a1.155 1.155 0 0 1 0 1.644l-2.697 2.607c-.466.462-1.211.462-1.677 0zM22 10.593c0-.61-.24-1.196-.667-1.623l-9.71-9.304a1.147 1.147 0 0 0-1.623 0l-9.333 9.304c-.427.427-.667 1.013-.667 1.623 0 .61.24 1.196.667 1.623l9.333 9.304c.427.427 1.013.667 1.623.667.61 0 1.196-.24 1.623-.667l9.71-9.304c.427-.427.667-1.013.667-1.623z" />
+                            </svg>
+                        </a>
+
+                    </div>
+
+                    <!-- FOOTER LINE -->
+                    <p class="mt-16 text-[15px] uppercase tracking-widest opacity-30">
+                        Code | Create | Innovate
+                    </p>
+                    <p class="mt-10 text-[10px] uppercase tracking-widest opacity-30">
+                        COIMBATORE — INDIA
+                    </p>
+                </div>
+            </section>
+
+
+            <script>
+                /* ===============================
+   PAGE NAVIGATION (PURE FADE)
+================================ */
+
+                let isNavigating = false;
+
+                function nav(pageId) {
+
+                    if (isNavigating) return; // prevent double tap
+                    isNavigating = true;
+
+                    const pages = document.querySelectorAll('.page');
+                    const targetPage = document.getElementById('page-' + pageId);
+
+                    // Update nav buttons
+                    document.querySelectorAll('.nav-btn').forEach(btn => {
+                        btn.classList.remove('nav-active');
+                        btn.classList.add('opacity-50');
+
+                        if (btn.dataset.nav === pageId) {
+                            btn.classList.add('nav-active');
+                            btn.classList.remove('opacity-50');
+                        }
+                    });
+
+                    // Fade out current page
+                    pages.forEach(p => {
+                        if (p.classList.contains('active')) {
+                            p.classList.add('exit');
+
+                            setTimeout(() => {
+                                p.classList.remove('active', 'exit');
+                            }, 500);
+                        }
+                    });
+
+                    // Fade in new page
+                    setTimeout(() => {
+
+                        if (!targetPage) return;
+
+                        requestAnimationFrame(() => {
+                            targetPage.classList.add('active');
+                        });
+
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                        // unlock navigation
+                        setTimeout(() => {
+                            isNavigating = false;
+                        }, 500);
+
+                    }, 420);
+                }
+
+
+                /* ===============================
+                   LANDING / SPLASH SCREEN
+                ================================ */
+
+                window.addEventListener('load', () => {
+
+                    setTimeout(() => {
+
+                        const landing = document.getElementById('landingScreen');
+                        landing.classList.add('hide');
+
+                        setTimeout(() => {
+                            landing.style.display = 'none';
+                            nav('home');
+                        }, 600);
+
+                    }, 1000);
+
+                });
+
+
+                /* ===============================
+                   THEME TOGGLE
+                ================================ */
+
+                const themeBtn = document.getElementById('themeToggle');
+
+                themeBtn.addEventListener('click', () => {
+
+                    document.body.classList.toggle('light-mode');
+
+                    const icon = document.getElementById('themeIcon');
+
+                    icon.innerHTML = document.body.classList.contains('light-mode')
+                        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+
+                });
+            </script>
+
+</html>
