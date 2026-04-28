@@ -123,50 +123,36 @@
             background: var(--bg);
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                position: relative;
-                height: auto;
-            }
-
-            .md-ml-64 {
-                margin-left: 0 !important;
-            }
+        /* Mobile Drawer */
+        .mobile-drawer {
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            text-align: left;
-            padding: 0;
+        .mobile-drawer.open {
+            transform: translateX(0);
         }
 
-
-        /* Landing Screen Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 1s ease forwards;
-        }
-
-        /* Smooth exit */
-        #landingScreen.hide {
+        /* Mobile Overlay */
+        #mobileOverlay {
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.3s ease;
+        }
+
+        #mobileOverlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                display: none;
+            }
+
+            .card-brutal:active {
+                border-color: var(--accent);
+            }
         }
 
         .nav-btn {
@@ -184,6 +170,28 @@
 
         .nav-btn:active {
             background: transparent;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        #landingScreen.hide {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
         }
 
         * {
@@ -206,10 +214,73 @@
         </div>
     </div>
 
+    <!-- MOBILE TOP BAR -->
+    <header class="fixed top-0 left-0 right-0 z-40 md:hidden flex items-center justify-between px-5 py-4"
+        style="background:var(--bg);border-bottom:1px solid var(--border);">
+        <h2 class="text-lg font-black tracking-tighter cursor-pointer" onclick="nav('home');closeMobileMenu()">
+            KAVIYARASU<span class="text-blue-500">.R</span></h2>
+        <div class="flex items-center gap-3">
+            <button id="themeToggleMobile"
+                class="p-2 border border-zinc-800 rounded-full hover:border-blue-500 transition-all focus:outline-none"
+                aria-label="Toggle Theme">
+                <svg id="themeIconMobile" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+            <button onclick="toggleMobileMenu()"
+                class="p-2 border border-zinc-800 rounded-lg hover:border-blue-500 transition-all focus:outline-none"
+                aria-label="Open Menu">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE OVERLAY -->
+    <div id="mobileOverlay" class="fixed inset-0 z-40 bg-black/70 md:hidden" onclick="closeMobileMenu()"></div>
+
+    <!-- MOBILE DRAWER -->
+    <nav id="mobileDrawer"
+        class="mobile-drawer fixed top-0 left-0 h-full w-72 z-50 md:hidden flex flex-col justify-between p-8"
+        style="background:var(--bg);border-right:1px solid var(--border);">
+        <div>
+            <div class="mb-12 mt-2">
+                <h2 class="text-2xl font-black tracking-tighter cursor-pointer" onclick="nav('home');closeMobileMenu()">
+                    KAVIYARASU<span class="text-blue-500">.R</span></h2>
+                <p class="text-[10px] uppercase tracking-widest opacity-50 mt-1">Learn | Build | Grow.</p>
+            </div>
+            <div class="space-y-6 flex flex-col items-start">
+                <button onclick="nav('home');closeMobileMenu()" data-nav="home"
+                    class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Home</button>
+                <button onclick="nav('about');closeMobileMenu()" data-nav="about"
+                    class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">About</button>
+                <button onclick="nav('projects');closeMobileMenu()" data-nav="projects"
+                    class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Projects</button>
+                <button onclick="nav('credentials');closeMobileMenu()" data-nav="credentials"
+                    class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Certifications</button>
+                <button onclick="nav('contact');closeMobileMenu()" data-nav="contact"
+                    class="nav-btn text-lg font-bold hover:text-blue-500 transition-colors opacity-50">Contact</button>
+            </div>
+        </div>
+        <div class="pt-8">
+            <button onclick="document.getElementById('themeToggle').click()"
+                class="p-3 border border-zinc-800 rounded-full hover:border-blue-500 transition-all focus:outline-none"
+                aria-label="Toggle Theme">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
     <div class="flex flex-col md:flex-row min-h-screen">
 
         <!-- SIDEBAR NAVIGATION -->
-        <aside class="sidebar w-full md:w-64 flex-shrink-0 p-8 flex flex-col justify-between md:fixed md:h-screen z-50">
+        <aside
+            class="sidebar hidden md:flex md:w-64 flex-shrink-0 p-8 flex-col justify-between md:fixed md:h-screen z-50">
             <div>
                 <div class="mb-12">
                     <h2 class="text-2xl font-black tracking-tighter cursor-pointer" onclick="nav('home')">
@@ -246,13 +317,14 @@
         </aside>
 
         <!-- MAIN CONTENT -->
-        <main class="flex-grow md:ml-64 px-4 py-6 sm:px-6 md:px-10 lg:px-16">
+        <main class="flex-grow md:ml-64 px-4 pt-20 pb-10 md:pt-8 md:pb-8 sm:px-6 md:px-10 lg:px-16">
 
             <!-- HOME PAGE -->
             <section id="page-home" class="page min-h-[85vh] flex items-center">
                 <div class="max-w-3xl w-full">
                     <h4 class="text-blue-500 font-bold mb-4 tracking-tighter"></h4>
-                    <h1 class="text-5xl md:text-8xl font-black leading-[0.9] mb-8 uppercase italic">
+                    <h1
+                        class="text-[2.5rem] sm:text-5xl md:text-8xl font-black leading-[0.9] mb-6 md:mb-8 uppercase italic">
                         Building the <br>
 
                         <span class="text-blue-500"
@@ -262,11 +334,12 @@
 
                         <br>
 
-                        <span class="text-5xl md:text-8xl font-black leading-[0.9] uppercase italic">
+                        <span class="text-[2.5rem] sm:text-5xl md:text-8xl font-black leading-[0.9] uppercase italic">
                             intelligence.
                         </span>
                     </h1>
-                    <p class="text-xl md:text-2xl opacity-70 mb-12 max-w-2xl leading-relaxed font-light text-justify">
+                    <p
+                        class="text-base sm:text-xl md:text-2xl opacity-70 mb-8 md:mb-12 max-w-2xl leading-relaxed font-light text-justify">
                         I'm <strong>KAVIYARASU R</strong>, an AIML
                         student
                         with a strong passion about programming, problem-solving, and technology. I enjoy building
@@ -283,11 +356,12 @@
 
             <!-- ABOUT PAGE -->
             <section id="page-about" class="page">
-                <div class="grid lg:grid-cols-2 gap-16 items-start">
+                <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
                     <div>
-                        <h2 class="text-5xl font-black mb-8">THE <span class="text-blue-500 ">PROFILE</span>
+                        <h2 class="text-3xl sm:text-5xl font-black mb-6 md:mb-8">THE <span
+                                class="text-blue-500">PROFILE</span>
                         </h2>
-                        <p class="text-xl opacity-80 leading-relaxed mb-6 text-justify">
+                        <p class="text-base sm:text-xl opacity-80 leading-relaxed mb-6 text-justify">
                             “Intelligent systems are not just built with code, but with the vision to create meaningful
                             technological solutions.”
                         </p>
@@ -599,7 +673,8 @@
                         Verified Credentials
                     </h4>
 
-                    <h2 class="text-5xl md:text-7xl font-black mb-8 leading-none uppercase text-center">
+                    <h2
+                        class="text-3xl sm:text-5xl md:text-7xl font-black mb-6 md:mb-8 leading-none uppercase text-center">
                         Professional<br>Certifications.
                     </h2>
                     <!-- Certificate Badge Icon -->
@@ -614,7 +689,8 @@
                         </div>
                     </div>
 
-                    <p class="text-xl md:text-2xl opacity-70 mb-12 max-w-2xl leading-relaxed mx-auto text-center">
+                    <p
+                        class="text-base sm:text-xl md:text-2xl opacity-70 mb-8 md:mb-12 max-w-2xl leading-relaxed mx-auto text-center">
                         I strengthen my technical expertise through industry-recognized certification programs. These
                         certifications reflect my commitment to continuous learning, professional development, and
                         staying updated with the latest advancements in programming and modern technologies.
@@ -690,7 +766,7 @@
                     <div class="mt-10 flex justify-center">
                         <a href="your-link" target="_blank" title="View all certificates">
                             <button
-                                class="vault-btn relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 text-white px-12 py-5 text-xl font-bold rounded-[35px] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95"
+                                class="vault-btn relative overflow-hidden inline-flex items-center gap-3 bg-blue-500 text-white px-6 py-3 sm:px-12 sm:py-5 text-base sm:text-xl font-bold rounded-[35px] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] active:scale-95"
                                 onclick="ripple(event)">
 
                                 <span class="relative z-10">CERTIFICATIONS VAULT</span>
@@ -759,14 +835,14 @@
                 <div class="min-h-[80vh] flex flex-col justify-center items-center text-center px-6">
 
                     <!-- HEADLINE -->
-                    <h2 class="text-5xl md:text-7xl font-black leading-tight mb-10">
+                    <h2 class="text-3xl sm:text-5xl md:text-7xl font-black leading-tight mb-6 md:mb-10">
                         Transforming ideas into<br>
                         <span class="text-blue-500">impactful technology</span>
                     </h2>
 
                     <!-- EMAIL CTA (BLUE BASE) -->
                     <a href="mailto:kaviyarasur271@gmail.com" title="Send me an email"
-                        class="flex items-center gap-3 bg-blue-500 text-white px-8 py-4 rounded-full font-bold hover:scale-105 hover:shadow-[4px_4px_0px_#1d4ed8] transition-all">
+                        class="flex items-center gap-2 bg-blue-500 text-white px-4 py-3 sm:px-8 sm:py-4 rounded-full font-bold hover:scale-105 hover:shadow-[4px_4px_0px_#1d4ed8] transition-all text-sm sm:text-base break-all">
                         kaviyarasur271@gmail.com
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -921,6 +997,35 @@
                         : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
 
                 });
+            </script>
+
+            <script>
+                function toggleMobileMenu() {
+                    const drawer = document.getElementById('mobileDrawer');
+                    const overlay = document.getElementById('mobileOverlay');
+                    drawer.classList.toggle('open');
+                    overlay.classList.toggle('open');
+                    document.body.style.overflow = drawer.classList.contains('open') ? 'hidden' : '';
+                }
+                function closeMobileMenu() {
+                    const drawer = document.getElementById('mobileDrawer');
+                    const overlay = document.getElementById('mobileOverlay');
+                    drawer.classList.remove('open');
+                    overlay.classList.remove('open');
+                    document.body.style.overflow = '';
+                }
+
+                /* Sync mobile theme toggle icon with desktop */
+                document.getElementById('themeToggleMobile').addEventListener('click', function () {
+                    document.getElementById('themeToggle').click();
+                });
+
+                /* Close drawer on swipe left */
+                let touchStartX = 0;
+                document.getElementById('mobileDrawer').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+                document.getElementById('mobileDrawer').addEventListener('touchend', e => {
+                    if (touchStartX - e.changedTouches[0].clientX > 60) closeMobileMenu();
+                }, { passive: true });
             </script>
 
 </html>
